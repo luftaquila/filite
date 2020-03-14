@@ -13,25 +13,18 @@ jobs:
         
     steps:
       - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
+      - uses: actions-rs/toolchain@v1.0.4
         if: matrix.os != 'ubuntu-18.04'
         with:
           toolchain: stable
           override: true
-      - uses: actions-rs/toolchain@v1
+      - uses: actions-rs/toolchain@v1.0.4
         if: matrix.os == 'ubuntu-18.04'
         with:
-          toolchain: stable
+          toolchain: nightly
           target: armv7-unknown-linux-gnueabihf
           override: true
-
-      - name: Rustup check
-        if: matrix.os == 'ubuntu-18.04'
-        run: rustup override unset
-
-      - name: Rustup check
-        if: matrix.os == 'ubuntu-18.04'
-        run: rustup default nightly-armv7-unknown-linux-gnueabihf
+          default: true
 
       - name: Rustup check
         if: matrix.os == 'ubuntu-18.04'
