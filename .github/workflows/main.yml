@@ -19,9 +19,11 @@ jobs:
           toolchain: stable
           override: true
 
-      - name: Rustup check
+      - uses: actions-rs/toolchain@v1.0.4
         if: matrix.os == 'ubuntu-18.04'
-        run: rustup default nightly-armv7-unknown-linux-gnueabihf
+        with:
+          toolchain: stable
+          target: armv7-unknown-linux-gnueabihf
 
       - name: Rustup check
         if: matrix.os == 'ubuntu-18.04'
