@@ -27,7 +27,7 @@ jobs:
 
       - name: Rustup check
         if: matrix.os == 'ubuntu-18.04'
-        run: rustup default armv7-unknown-linux-gnueabihf
+        run: rustup default stable-armv7-unknown-linux-gnueabihf
 
       - name: Rustup check
         if: matrix.os == 'ubuntu-18.04'
