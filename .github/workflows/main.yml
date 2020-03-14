@@ -23,6 +23,7 @@ jobs:
         if: matrix.os == 'ubuntu-18.04'
         with:
           toolchain: stable
+          override: true
           target: armv7-unknown-linux-gnueabihf
 
       - name: Rustup check
@@ -41,6 +42,7 @@ jobs:
         with:
           path: target
           key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+
       - name: Build project
         uses: actions-rs/cargo@v1.0.1
         if: matrix.os != 'ubuntu-18.04'
@@ -54,9 +56,11 @@ jobs:
           use-cross: true
           command: build
           args: --target armv7-unknown-linux-gnueabihf --release
+
       - name: Strip binary
         if: runner.os != 'Windows'
         run: strip target/release/filite
+
       - name: Upload binary
         if: matrix.os != 'ubuntu-18.04'
         uses: actions/upload-artifact@v1
@@ -69,40 +73,3 @@ jobs:
         with:
           name: Linux-armv7
           path: ${{ matrix.path || 'target/release/filite' }}
-  checks:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-      - uses: actions/cache@v1
-        with:
-          path: ~/.cargo/registry
-          key: checks-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
-      - uses: actions/cache@v1
-        with:
-          path: ~/.cargo/git
-          key: checks-cargo-index-${{ hashFiles('**/Cargo.lock') }}
-      - uses: actions/cache@v1
-        with:
-          path: target
-          key: checks-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
-      - run: rustup component add rustfmt
-      - run: rustup component add clippy
-      - name: Run tests
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --all
-      - name: Check for clippy warnings
-        uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: --all -- -D warnings
-      - name: Check formatting
-        uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: --all -- --check
