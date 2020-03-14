@@ -72,4 +72,5 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: Linux-armv7
-          path: ${{ matrix.path || 'target/release/filite' }}
+          #path: ${{ matrix.path || 'target/release/filite' }}
+          path: target/armv7-unknown-linux-gnueabihf/release/
