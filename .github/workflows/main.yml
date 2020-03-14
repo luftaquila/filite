@@ -5,7 +5,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, ubuntu-18.04, windows-latest, macOS-latest]
+        #os: [ubuntu-latest, ubuntu-18.04, windows-latest, macOS-latest]
+        os: ubuntu-18.04
         include:
           - os: windows-latest
             path: target/release/filite.exe
@@ -21,8 +22,14 @@ jobs:
         if: matrix.os == 'ubuntu-18.04'
         with:
           toolchain: stable
-          override: true
           target: armv7-unknown-linux-gnueabihf
+          override: true
+
+      - name: Rustup check
+        if: matrix.os == 'ubuntu-18.04'
+        run: rustup default armv7-unknown-linux-gnueabihf
+        run: rustup show
+
       - uses: actions/cache@v1
         with:
           path: ~/.cargo/registry
@@ -41,14 +48,13 @@ jobs:
         with:
           command: build
           args: --release
-
       - name: Build project for armv7
         uses: actions-rs/cargo@v1.0.1
         if: matrix.os == 'ubuntu-18.04'
         with:
           use-cross: true
           command: build
-          args: --release --target armv7-unknown-linux-gnueabihf
+          args: --target armv7-unknown-linux-gnueabihf --release
       - name: Strip binary
         if: runner.os != 'Windows'
         run: strip target/release/filite
