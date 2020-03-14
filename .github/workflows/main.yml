@@ -53,9 +53,16 @@ jobs:
         if: runner.os != 'Windows'
         run: strip target/release/filite
       - name: Upload binary
+        if: matrix.os != 'ubuntu-18.04'
         uses: actions/upload-artifact@v1
         with:
           name: ${{ runner.os }}
+          path: ${{ matrix.path || 'target/release/filite' }}
+      - name: Upload binary for armv7
+        if: matrix.os == 'ubuntu-18.04'
+        uses: actions/upload-artifact@v1
+        with:
+          name: Linux-armv7
           path: ${{ matrix.path || 'target/release/filite' }}
   checks:
     runs-on: ubuntu-latest
