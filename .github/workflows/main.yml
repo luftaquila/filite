@@ -31,6 +31,10 @@ jobs:
 
       - name: Rustup check
         if: matrix.os == 'ubuntu-18.04'
+        run: rustup override unset
+
+      - name: Rustup check
+        if: matrix.os == 'ubuntu-18.04'
         run: rustup show
 
       - uses: actions/cache@v1
