@@ -13,12 +13,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
-        if: runner.os != 'ubuntu-18.04'
+        if: matrix.os != 'ubuntu-18.04'
         with:
           toolchain: stable
           override: true
       - uses: actions-rs/toolchain@v1
-        if: runner.os == 'ubuntu-18.04'
+        if: matrix.os == 'ubuntu-18.04'
         with:
           toolchain: stable
           override: true
@@ -37,14 +37,14 @@ jobs:
           key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
       - name: Build project
         uses: actions-rs/cargo@v1.0.1
-        if: runner.os != 'ubuntu-18.04'
+        if: matrix.os != 'ubuntu-18.04'
         with:
           command: build
           args: --release
 
       - name: Build project for armv7
         uses: actions-rs/cargo@v1.0.1
-        if: runner.os == 'ubuntu-18.04'
+        if: matrix.os == 'ubuntu-18.04'
         with:
           use-cross: true
           command: build
