@@ -5,8 +5,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        #os: [ubuntu-latest, ubuntu-18.04, windows-latest, macOS-latest]
-        os: [ubuntu-18.04]
+        os: [ubuntu-16.04]
         include:
           - os: windows-latest
             path: target/release/filite.exe
@@ -14,20 +13,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1.0.4
-        if: matrix.os != 'ubuntu-18.04'
-        with:
-          toolchain: stable
-          override: true
-
-      - uses: actions-rs/toolchain@v1.0.4
-        if: matrix.os == 'ubuntu-18.04'
         with:
           toolchain: stable
           override: true
           target: armv7-unknown-linux-gnueabihf
 
       - name: Rustup check
-        if: matrix.os == 'ubuntu-18.04'
         run: rustup show
 
       - uses: actions/cache@v1
@@ -45,32 +36,18 @@ jobs:
 
       - name: Build project
         uses: actions-rs/cargo@v1.0.1
-        if: matrix.os != 'ubuntu-18.04'
-        with:
-          command: build
-          args: --release
-      - name: Build project for armv7
-        uses: actions-rs/cargo@v1.0.1
-        if: matrix.os == 'ubuntu-18.04'
         with:
           use-cross: true
           command: build
-          args: --target armv7-unknown-linux-gnueabihf --release
+          args: --target x86_64-unknown-linux-gnu --release
 
       - name: Strip binary
         if: runner.os != 'Windows'
         run: strip target/release/filite
 
       - name: Upload binary
-        if: matrix.os != 'ubuntu-18.04'
         uses: actions/upload-artifact@v1
         with:
-          name: ${{ runner.os }}
-          path: ${{ matrix.path || 'target/release/filite' }}
-      - name: Upload binary for armv7
-        if: matrix.os == 'ubuntu-18.04'
-        uses: actions/upload-artifact@v1
-        with:
-          name: Linux-armv7
+          name: Linux
           #path: ${{ matrix.path || 'target/release/filite' }}
-          path: target/armv7-unknown-linux-gnueabihf/release/
+          path: target/x86_64-unknown-linux-gnu/release/
