@@ -38,9 +38,9 @@ jobs:
           command: build
           args: --target x86_64-unknown-linux-gnu --release
 
-      #- name: Strip binary
-        #if: runner.os != 'Windows'
-        #run: strip target/release/filite
+      - name: Strip binary
+        if: runner.os != 'Windows'
+        run: strip target/release/filite
 
       - name: Upload binary
         uses: actions/upload-artifact@v1
